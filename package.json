@@ -1,0 +1,49 @@
+{
+  "name": "express-service",
+  "version": "1.0.0",
+  "description": "Express server running inside ServiceWorker",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint",
+    "lint": "standard *.js src/*.js",
+    "commit": "commit-wizard",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahmutov/express-service.git"
+  },
+  "keywords": [
+    "express",
+    "server",
+    "expressjs",
+    "browser",
+    "serviceworker"
+  ],
+  "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bahmutov/express-service/issues"
+  },
+  "homepage": "https://github.com/bahmutov/express-service#readme",
+  "config": {
+    "pre-git": {
+      "commit-msg": [
+        "simple"
+      ],
+      "pre-commit": [
+        "npm run lint",
+        "npm run test"
+      ],
+      "pre-push": [],
+      "post-commit": [],
+      "post-merge": []
+    }
+  },
+  "devDependencies": {
+    "express": "4.13.3",
+    "pre-git": "3.1.2",
+    "standard": "5.4.1",
+    "webpack": "1.12.9"
+  }
+}
