@@ -8,7 +8,7 @@
     "lint": "standard *.js src/*.js",
     "commit": "commit-wizard",
     "build": "webpack",
-    "standalone": "node --harmony src/standalone-server.js"
+    "stand-alone": "node --harmony src/stand-alone.js"
   },
   "repository": {
     "type": "git",
