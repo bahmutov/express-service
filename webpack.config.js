@@ -1,9 +1,17 @@
-module.exports = {
+module.exports = [{
   output: {
     path: './dist',
-    filename: 'demo-server.js'
+    filename: 'client.js'
   },
   entry: {
-    'demo-server': './src/demo-server'
+    client: './src/express-client'
   }
-}
+}, {
+  output: {
+    path: './dist',
+    filename: 'service.js'
+  },
+  entry: {
+    client: './src/express-service'
+  }
+}]

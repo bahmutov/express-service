@@ -2,13 +2,16 @@
   "name": "express-service",
   "version": "1.0.0",
   "description": "Express server running inside ServiceWorker",
-  "main": "index.js",
+  "main": "src/stand-alone.js",
   "scripts": {
     "test": "npm run lint",
     "lint": "standard *.js src/*.js",
     "commit": "commit-wizard",
-    "build": "webpack",
-    "stand-alone": "node --harmony src/stand-alone.js"
+    "no-build-for-now": "browserify src/express-service.js -o dist/service.js",
+    "webpack": "webpack",
+    "start": "npm run stand-alone",
+    "stand-alone": "node --harmony src/stand-alone.js",
+    "dev-start": "http-server dist -c-1 -p 3007"
   },
   "repository": {
     "type": "git",
@@ -42,9 +45,15 @@
     }
   },
   "devDependencies": {
+    "browserify": "12.0.1",
     "express": "4.13.3",
+    "http-server": "0.8.5",
     "pre-git": "3.1.2",
     "standard": "5.4.1",
     "webpack": "1.12.9"
+  },
+  "dependencies": {
+    "check-more-types": "2.10.0",
+    "lazy-ass": "1.3.0"
   }
 }
