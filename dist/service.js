@@ -24720,9 +24720,21 @@ var vary = require('vary');
  * Response prototype.
  */
 
-http.ServerResponse = {}
+http.ServerResponseProto = {
+  _headers: {},
+  setHeader: function setHeader(name, value) {
+    console.log('set header %s to %s', name, value)
+    this._headers[name] = value
+  },
+  getHeader: function getHeader(name) {
+    return this._headers[name]
+  },
+  get: function get(name) {
+    return this._headers[name]
+  }
+}
 var res = module.exports = {
-  __proto__: http.ServerResponse.prototype
+  __proto__: http.ServerResponseProto
 };
 
 /**
@@ -25418,6 +25430,7 @@ res.header = function header(field, val) {
  */
 
 res.get = function(field){
+  console.log('this is', this)
   return this.getHeader(field);
 };
 
@@ -25936,7 +25949,12 @@ proto.handle = function handle(req, res, out) {
 
     // no more matching layers
     if (idx >= stack.length) {
-      setImmediate(done, layerError);
+      if (!self.setImmediate) {
+        self.setImmediate = function (cb, param) {
+          setTimeout(cb.bind(null, param), 0)
+        }
+      }
+      self.setImmediate(done, layerError);
       return;
     }
 
@@ -41640,6 +41658,8 @@ const url = require('url')
 const myName = 'express-service'
 console.log(myName, 'startup')
 
+var http = require('http')
+
 const app = require('./demo-server')
 console.log('got demo express server', typeof app)
 
@@ -41655,22 +41675,66 @@ function isIndexPageRequest (path) {
   return path === '/'
 }
 
+function isJsRequest (path) {
+  return /\.js$/.test(path)
+}
+
 self.addEventListener('fetch', function (event) {
   const parsedUrl = url.parse(event.request.url)
-  console.log(myName, 'fetching index page', parsedUrl.path)
+  console.log(myName, 'fetching page', parsedUrl.path)
   if (isIndexPageRequest(parsedUrl.path)) {
+    return fetch(event.request)
+  }
+  if (isJsRequest(parsedUrl.path)) {
     return fetch(event.request)
   }
 
   event.respondWith(new Promise(function (resolve) {
-    var responseOptions = {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html charset=UTF-8'
+    // let Express handle the request, but get the result
+
+    console.log(myName, 'handle request', JSON.stringify(parsedUrl, null, 2))
+    // var req = http.request({
+    //   url: parsedUrl.href
+    // })
+    var req = {
+      url: parsedUrl.href,
+      method: 'GET'
+    }
+    console.log(req)
+    var res = {
+      _headers: {},
+      setHeader: function setHeader(name, value) {
+        console.log('set header %s to %s', name, value)
+        this._headers[name] = value
+      },
+      getHeader: function getHeader(name) {
+        return this._headers[name]
+      },
+      get: function get(name) {
+        return this._headers[name]
       }
     }
-    resolve(new Response('foo there', responseOptions))
+
+    function endWithFinish (chunk, encoding) {
+      console.log('ending response for request', req.url)
+      console.log('output "%s ..."', chunk.toString().substr(0, 10))
+      console.log('%d %s %d', res.statusCode || 200,
+        res.get('Content-Type'),
+        res.get('Content-Length'))
+      // end.apply(res, arguments)
+      const responseOptions = {
+        status: res.statusCode || 200,
+        headers: {
+          'Content-Length': res.get('Content-Length'),
+          'Content-Type': res.get('Content-Type')
+        }
+      }
+      resolve(new Response(chunk, responseOptions))
+    }
+
+    res.end = endWithFinish
+    app(req, res)
   }))
 })
 
-},{"./demo-server":303,"url":229}]},{},[304]);
+},{"./demo-server":303,"url":229, "http":223}]},{},[304]);
