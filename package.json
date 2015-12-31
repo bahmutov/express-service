@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Express server running inside ServiceWorker",
   "main": "src/stand-alone.js",
+  "files": [
+    "src"
+  ],
   "scripts": {
     "test": "npm run lint",
     "lint": "standard *.js src/*.js",
