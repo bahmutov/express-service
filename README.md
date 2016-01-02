@@ -5,7 +5,8 @@ As a proof of concept I have been able to intercept fetch requests from the
 page and serve them using an ExpressJS running inside a ServiceWorker.
 
 There was a little bit of hacking inside the bundle [dist/service.js](dist/service.js)
-that was created using Browserify. 
+that was created using Browserify. I will clean up the code to be able to recreate
+the bundle automatically. For now you can find the updated server code starting at line 41692.
 
 ## The ExpressJS server
 
@@ -78,6 +79,14 @@ This experiment is still pretty raw, but it has 3 main advantages right now
   creating better experience.
 * Except for the initial page that can be very simple (just register and activate
   the ServiceWorker), the rest of the pages does not need to run the application JavaScript code!
+
+## Related
+
+* [serviceworkers-ware](https://www.npmjs.com/package/serviceworkers-ware) - Express-like
+  middleware stacks for processing inside a ServiceWorker, but not the real ExpressJS
+* [bottle-service](https://github.com/bahmutov/bottle-service) - ServiceWorker interceptor
+  that you can use to cache updated HTML to make sure the page arrives "pre-rendered" on
+  next load for instant start up.
 
 ### Small print
 
