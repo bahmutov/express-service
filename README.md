@@ -1,12 +1,13 @@
 # express-service
 > ExpressJS server running inside ServiceWorker
 
+[![NPM][express-service-icon] ][express-service-url]
+
+[![Build status][express-service-ci-image] ][express-service-ci-url]
+[![semantic-release][semantic-image] ][semantic-url]
+
 As a proof of concept I have been able to intercept fetch requests from the
 page and serve them using an ExpressJS running inside a ServiceWorker.
-
-There was a little bit of hacking inside the bundle [dist/service.js](dist/service.js)
-that was created using Browserify. I will clean up the code to be able to recreate
-the bundle automatically. For now you can find the updated server code starting at line 41692.
 
 ## The ExpressJS server
 
@@ -127,3 +128,10 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
+
+[express-service-icon]: https://nodei.co/npm/express-service.png?downloads=true
+[express-service-url]: https://npmjs.org/package/express-service
+[express-service-ci-image]: https://travis-ci.org/bahmutov/express-service.png?branch=master
+[express-service-ci-url]: https://travis-ci.org/bahmutov/express-service
+[semantic-image]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+[semantic-url]: https://github.com/semantic-release/semantic-release
