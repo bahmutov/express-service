@@ -21,6 +21,7 @@ var aboutPage = [
   '</head>',
   '<body>',
   '<h1>About express-service</h1>',
+  '<p>Served by Express framework</p>',
   '</body>',
   '</html>'
 ].join('\n')

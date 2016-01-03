@@ -17726,7 +17726,7 @@ module.exports = function privateDecrypt(private_key, enc, reverse) {
   } else {
     padding = 4;
   }
-
+  
   var key = parseKeys(private_key);
   var k = key.modulus.byteLength();
   if (enc.length > k || new bn(enc).cmp(key.modulus) >= 0) {
@@ -21625,32 +21625,22 @@ try {
 	exports.blobConstructor = true
 } catch (e) {}
 
-var xhr
-if (typeof self === 'object') {
-  xhr = {}
-  function checkTypeSupport() {
-    return true
-  }
-} else {
+var xhr = new global.XMLHttpRequest()
+// If location.host is empty, e.g. if this page/worker was loaded
+// from a Blob, then use example.com to avoid an error
+xhr.open('GET', global.location.host ? '/' : 'https://example.com')
 
-  xhr = new global.XMLHttpRequest()
-  // If location.host is empty, e.g. if this page/worker was loaded
-  // from a Blob, then use example.com to avoid an error
-  xhr.open('GET', global.location.host ? '/' : 'https://example.com')
-
-  function checkTypeSupport (type) {
-  	try {
-  		xhr.responseType = type
-  		return xhr.responseType === type
-  	} catch (e) {}
-  	return false
-  }
+function checkTypeSupport (type) {
+	try {
+		xhr.responseType = type
+		return xhr.responseType === type
+	} catch (e) {}
+	return false
 }
-
 
 // For some strange reason, Safari 7.0 reports typeof global.ArrayBuffer === 'object'.
 // Safari 7.1 appears to have fixed this bug.
-var haveArrayBuffer = typeof global.ArrayBuffer !== 'undefined' || typeof self.ArrayBuffer !== 'undefined'
+var haveArrayBuffer = typeof global.ArrayBuffer !== 'undefined'
 var haveSlice = haveArrayBuffer && isFunction(global.ArrayBuffer.prototype.slice)
 
 exports.arraybuffer = haveArrayBuffer && checkTypeSupport('arraybuffer')
@@ -22064,7 +22054,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 				self.push(new Buffer(response))
 				break
 			}
-			// Falls through in IE8
+			// Falls through in IE8	
 		case 'text':
 			try { // This will fail when readyState = 3 in IE9. Switch mode and wait for readyState = 4
 				response = xhr.responseText
@@ -23215,13 +23205,13 @@ Script.prototype.runInContext = function (context) {
     if (!(context instanceof Context)) {
         throw new TypeError("needs a 'context' argument.");
     }
-
+    
     var iframe = document.createElement('iframe');
     if (!iframe.style) iframe.style = {};
     iframe.style.display = 'none';
-
+    
     document.body.appendChild(iframe);
-
+    
     var win = iframe.contentWindow;
     var wEval = win.eval, wExecScript = win.execScript;
 
@@ -23230,7 +23220,7 @@ Script.prototype.runInContext = function (context) {
         wExecScript.call(win, 'null');
         wEval = win.eval;
     }
-
+    
     forEach(Object_keys(context), function (key) {
         win[key] = context[key];
     });
@@ -23239,11 +23229,11 @@ Script.prototype.runInContext = function (context) {
             win[key] = context[key];
         }
     });
-
+    
     var winKeys = Object_keys(win);
 
     var res = wEval.call(win, this.code);
-
+    
     forEach(Object_keys(win), function (key) {
         // Avoid copying circular objects like `top` and `window` by only
         // updating existing context properties or new properties in the `win`
@@ -23258,9 +23248,9 @@ Script.prototype.runInContext = function (context) {
             defineProp(context, key, win[key]);
         }
     });
-
+    
     document.body.removeChild(iframe);
-
+    
     return res;
 };
 
@@ -24218,7 +24208,6 @@ var proxyaddr = require('proxy-addr');
  * Request prototype.
  */
 
-http.IncomingMessage = {}
 var req = exports = module.exports = {
   __proto__: http.IncomingMessage.prototype
 };
@@ -24720,21 +24709,8 @@ var vary = require('vary');
  * Response prototype.
  */
 
-http.ServerResponseProto = {
-  _headers: {},
-  setHeader: function setHeader(name, value) {
-    console.log('set header %s to %s', name, value)
-    this._headers[name] = value
-  },
-  getHeader: function getHeader(name) {
-    return this._headers[name]
-  },
-  get: function get(name) {
-    return this._headers[name]
-  }
-}
 var res = module.exports = {
-  __proto__: http.ServerResponseProto
+  __proto__: http.ServerResponse.prototype
 };
 
 /**
@@ -24898,6 +24874,7 @@ res.send = function send(body) {
     this.end();
   } else {
     // respond
+    // console.log('chunk', chunk.toString())
     this.end(chunk, encoding);
   }
 
@@ -25430,7 +25407,6 @@ res.header = function header(field, val) {
  */
 
 res.get = function(field){
-  console.log('this is', this)
   return this.getHeader(field);
 };
 
@@ -25949,12 +25925,7 @@ proto.handle = function handle(req, res, out) {
 
     // no more matching layers
     if (idx >= stack.length) {
-      if (!self.setImmediate) {
-        self.setImmediate = function (cb, param) {
-          setTimeout(cb.bind(null, param), 0)
-        }
-      }
-      self.setImmediate(done, layerError);
+      setImmediate(done, layerError);
       return;
     }
 
@@ -35567,7 +35538,7 @@ exports.unsign = function(val, secret){
   if ('string' != typeof secret) throw new TypeError("Secret string must be provided.");
   var str = val.slice(0, val.lastIndexOf('.'))
     , mac = exports.sign(str, secret);
-
+  
   return sha1(mac) == sha1(val) ? str : false;
 };
 
@@ -37369,7 +37340,7 @@ function fresh(req, res) {
   if (!modifiedSince && !noneMatch) return false;
 
   // check for no-cache cache request directive
-  if (cc && cc.indexOf('no-cache') !== -1) return false;
+  if (cc && cc.indexOf('no-cache') !== -1) return false;  
 
   // parse if-none-match
   if (noneMatch) noneMatch = noneMatch.split(/ *, */);
@@ -41608,6 +41579,12 @@ function vary(res, field) {
 }
 
 },{}],303:[function(require,module,exports){
+function XMLHttpRequest () {
+  this.open = function open () {}
+}
+module.exports = XMLHttpRequest
+
+},{}],304:[function(require,module,exports){
 var express = require('express')
 var app = express()
 
@@ -41631,6 +41608,7 @@ var aboutPage = [
   '</head>',
   '<body>',
   '<h1>About express-service</h1>',
+  '<p>Served by Express framework</p>',
   '</body>',
   '</html>'
 ].join('\n')
@@ -41648,17 +41626,42 @@ app.get('/about', sendAboutPage)
 
 module.exports = app
 
-},{"express":234}],304:[function(require,module,exports){
+},{"express":234}],305:[function(require,module,exports){
+(function (global){
 'use strict'
-// ExpressJS running inside ServiceWorker
+// ServiceWorker script
+// functions as an adaptor between the Express
+// and the ServiceWorker environment
 
-/* global self, Promise */
-// Response, location, fetch
+// patch and mock the environment
+if (typeof global.XMLHttpRequest === 'undefined') {
+  global.XMLHttpRequest = require('./XMLHttpRequest-mock')
+}
+var http = require('http')
+if (!http.IncomingMessage) {
+  http.IncomingMessage = {}
+}
+if (!http.ServerResponse) {
+  http.ServerResponseProto = {
+    _headers: {},
+    setHeader: function setHeader (name, value) {
+      console.log('set header %s to %s', name, value)
+      this._headers[name] = value
+    },
+    getHeader: function getHeader (name) {
+      return this._headers[name]
+    },
+    get: function get (name) {
+      return this._headers[name]
+    }
+  }
+  http.ServerResponse = Object.create({}, http.ServerResponseProto)
+}
+
+/* global self, Promise, Response, fetch */
 const url = require('url')
 const myName = 'express-service'
 console.log(myName, 'startup')
-
-var http = require('http')
 
 const app = require('./demo-server')
 console.log('got demo express server', typeof app)
@@ -41693,9 +41696,6 @@ self.addEventListener('fetch', function (event) {
     // let Express handle the request, but get the result
 
     console.log(myName, 'handle request', JSON.stringify(parsedUrl, null, 2))
-    // var req = http.request({
-    //   url: parsedUrl.href
-    // })
     var req = {
       url: parsedUrl.href,
       method: 'GET'
@@ -41703,14 +41703,14 @@ self.addEventListener('fetch', function (event) {
     console.log(req)
     var res = {
       _headers: {},
-      setHeader: function setHeader(name, value) {
+      setHeader: function setHeader (name, value) {
         console.log('set header %s to %s', name, value)
         this._headers[name] = value
       },
-      getHeader: function getHeader(name) {
+      getHeader: function getHeader (name) {
         return this._headers[name]
       },
-      get: function get(name) {
+      get: function get (name) {
         return this._headers[name]
       }
     }
@@ -41737,4 +41737,5 @@ self.addEventListener('fetch', function (event) {
   }))
 })
 
-},{"./demo-server":303,"url":229, "http":223}]},{},[304]);
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./XMLHttpRequest-mock":303,"./demo-server":304,"http":223,"url":229}]},{},[305]);
