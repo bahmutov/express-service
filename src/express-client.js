@@ -1,9 +1,6 @@
 !(function startExpressService (root) {
   'use strict'
 
-  const la = require('lazy-ass')
-  const is = require('check-more-types')
-
   if (!root.navigator) {
     console.error('Missing navigator')
     return
@@ -26,16 +23,7 @@
   var scope = '/'
 
   function registeredWorker (registration) {
-    la(registration, 'missing service worker registration')
-    la(registration.active, 'missing active service worker')
-    la(is.fn(registration.active.postMessage),
-      'expected function postMessage to communicate with service worker')
-
-    console.log('express-service working...')
-
-    registration.active.onmessage = function messageFromServiceWorker (e) {
-      console.log('received message from the service worker', e)
-    }
+    console.log('express-service registered...')
   }
 
   function onError (err) {
@@ -43,7 +31,7 @@
       // the service worker is installed
       window.location.reload()
     } else {
-      console.error('express service error', err)
+      console.error('express service worker error', err)
     }
   }
 
