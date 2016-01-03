@@ -10,10 +10,17 @@
     "test": "npm run lint",
     "lint": "standard *.js src/*.js examples/**/*.js",
     "commit": "commit-wizard",
-    "build": "npm run basic-example",
+
+    "build": "npm run todomvc-example",
+
     "basic-example": "npm run basic-example-service && npm run basic-example-client",
     "basic-example-service": "browserify examples/basic/service-worker-server.js -o dist/express-service.js",
     "basic-example-client": "cp src/client.js dist/client.js",
+
+    "todomvc-example": "npm run todomvc-example-service && npm run todomvc-example-client",
+    "todomvc-example-service": "browserify examples/todomvc/index.js -o dist/express-service.js",
+    "todomvc-example-client": "cp src/client.js dist/client.js",
+
     "start": "npm run stand-alone",
     "stand-alone": "node --harmony src/stand-alone.js",
     "dev-start": "http-server dist -c-1 -p 3007",
@@ -56,7 +63,8 @@
     "git-issues": "1.2.0",
     "http-server": "0.8.5",
     "pre-git": "3.1.2",
-    "standard": "5.4.1"
+    "standard": "5.4.1",
+    "todomvc-express": "1.1.2"
   },
   "dependencies": {
     "check-more-types": "2.10.0",

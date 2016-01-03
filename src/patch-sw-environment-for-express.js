@@ -2,10 +2,12 @@
 if (typeof global.XMLHttpRequest === 'undefined') {
   global.XMLHttpRequest = require('./XMLHttpRequest-mock')
 }
+
 var http = require('http')
 if (!http.IncomingMessage) {
   http.IncomingMessage = {}
 }
+
 if (!http.ServerResponse) {
   http.ServerResponseProto = {
     _headers: {},
@@ -21,4 +23,10 @@ if (!http.ServerResponse) {
     }
   }
   http.ServerResponse = Object.create({}, http.ServerResponseProto)
+}
+
+if (typeof setImmediate === 'undefined') {
+  global.setImmediate = function setImmediate (cb, param) {
+    setTimeout(cb.bind(null, param), 0)
+  }
 }
