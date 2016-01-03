@@ -43,8 +43,8 @@ app.get('/about', sendAboutPage)
 module.exports = app
 
 },{"express":236}],2:[function(require,module,exports){
-const app = require('./demo-server')
 const expressService = require('../..')
+const app = require('./demo-server')
 expressService(app)
 
 },{"../..":307,"./demo-server":1}],3:[function(require,module,exports){
@@ -41667,14 +41667,13 @@ if (!http.ServerResponse) {
 // ServiceWorker script
 // functions as an adaptor between the Express
 // and the ServiceWorker environment
+require('./patch-sw-environment-for-express')
 
 // server - Express application, as in
 // var express = require('express')
 // var app = express()
 // think of this as equivalent to http.createServer(app)
 function expressService (app) {
-  require('./patch-sw-environment-for-express')
-
   /* global self, Promise, Response, fetch */
   const url = require('url')
   const myName = 'express-service'

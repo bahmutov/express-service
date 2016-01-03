@@ -3,14 +3,13 @@
 // ServiceWorker script
 // functions as an adaptor between the Express
 // and the ServiceWorker environment
+require('./patch-sw-environment-for-express')
 
 // server - Express application, as in
 // var express = require('express')
 // var app = express()
 // think of this as equivalent to http.createServer(app)
 function expressService (app) {
-  require('./patch-sw-environment-for-express')
-
   /* global self, Promise, Response, fetch */
   const url = require('url')
   const myName = 'express-service'
