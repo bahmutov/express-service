@@ -1,6 +1,9 @@
 var app = require('./demo-server')
 var http = require('http')
 
+// this is a test
+// A way to wait until the response has been rendered
+// and then do something with the response object
 function fn (req, res) {
   console.log('callback req', req.url)
 

@@ -9,6 +9,8 @@ var indexPage = [
   '</head>',
   '<body>',
   '<h1>Hello World</h1>',
+  '<p>Served by Express framework</p>',
+  '<p>read <a href="/about">about page</a></p>',
   '</body>',
   '</html>'
 ].join('\n')
