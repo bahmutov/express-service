@@ -19,7 +19,7 @@
     return scriptPath.substr(0, scriptPath.lastIndexOf('/') + 1)
   }
 
-  var serviceScriptUrl = getCurrentScriptFolder() + 'service.js'
+  var serviceScriptUrl = getCurrentScriptFolder() + 'express-service.js'
   var scope = '/'
 
   function registeredWorker (registration) {
