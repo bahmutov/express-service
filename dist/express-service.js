@@ -61571,6 +61571,22 @@ function expressService (app) {
     return /\.css$/.test(path)
   }
 
+  function isFormPost (req) {
+    return req.method === 'POST' &&
+      req.headers.get('content-type') === 'application/x-www-form-urlencoded'
+  }
+
+  function formToObject (text) {
+    var obj = {}
+    text.split('\n').forEach(function (line) {
+      const parts = line.split('=')
+      if (parts.length === 2) {
+        obj[parts[0]] = parts[1]
+      }
+    })
+    return obj
+  }
+
   self.addEventListener('fetch', function (event) {
     const parsedUrl = url.parse(event.request.url)
     console.log(myName, 'fetching page', parsedUrl.path)
@@ -61583,46 +61599,56 @@ function expressService (app) {
       // let Express handle the request, but get the result
       console.log(myName, 'handle request', JSON.stringify(parsedUrl, null, 2))
 
-      var req = {
-        url: parsedUrl.href,
-        method: event.request.method,
-        headers: {},
-        unpipe: function () {}
-      }
-      // console.log(req)
-      var res = {
-        _headers: {},
-        setHeader: function setHeader (name, value) {
-          // console.log('set header %s to %s', name, value)
-          this._headers[name] = value
-        },
-        getHeader: function getHeader (name) {
-          return this._headers[name]
-        },
-        get: function get (name) {
-          return this._headers[name]
+      event.request.clone().text().then(function (text) {
+        var body = text
+        if (isFormPost(event.request)) {
+          body = formToObject(text)
         }
-      }
 
-      function endWithFinish (chunk, encoding) {
-        console.log('ending response for request', req.url)
-        console.log('output "%s ..."', chunk.toString().substr(0, 10))
-        console.log('%d %s %d', res.statusCode || 200,
-          res.get('Content-Type'),
-          res.get('Content-Length'))
-        // end.apply(res, arguments)
-        const responseOptions = {
-          status: res.statusCode || 200,
+        var req = {
+          url: parsedUrl.href,
+          method: event.request.method,
+          body: body,
           headers: {
-            'Content-Length': res.get('Content-Length'),
-            'Content-Type': res.get('Content-Type')
+            'content-type': event.request.headers.get('content-type')
+          },
+          unpipe: function () {}
+        }
+        // console.log(req)
+        var res = {
+          _headers: {},
+          setHeader: function setHeader (name, value) {
+            // console.log('set header %s to %s', name, value)
+            this._headers[name] = value
+          },
+          getHeader: function getHeader (name) {
+            return this._headers[name]
+          },
+          get: function get (name) {
+            return this._headers[name]
           }
         }
-        resolve(new Response(chunk, responseOptions))
-      }
 
-      res.end = endWithFinish
-      app(req, res)
+        function endWithFinish (chunk, encoding) {
+          console.log('ending response for request', req.url)
+          console.log('output "%s ..."', chunk.toString().substr(0, 10))
+          console.log('%d %s %d', res.statusCode || 200,
+            res.get('Content-Type'),
+            res.get('Content-Length'))
+          // end.apply(res, arguments)
+          const responseOptions = {
+            status: res.statusCode || 200,
+            headers: {
+              'Content-Length': res.get('Content-Length'),
+              'Content-Type': res.get('Content-Type')
+            }
+          }
+          resolve(new Response(chunk, responseOptions))
+        }
+
+        res.end = endWithFinish
+        app(req, res)
+      })
     }))
   })
 }
