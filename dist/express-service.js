@@ -61581,7 +61581,7 @@ function expressService (app) {
     text.split('\n').forEach(function (line) {
       const parts = line.split('=')
       if (parts.length === 2) {
-        obj[parts[0]] = parts[1]
+        obj[parts[0]] = decodeURIComponent(parts[1].replace(/\+/g, ' '))
       }
     })
     return obj
@@ -61642,6 +61642,12 @@ function expressService (app) {
               'Content-Length': res.get('Content-Length'),
               'Content-Type': res.get('Content-Type')
             }
+          }
+          if (res.get('Location')) {
+            responseOptions.headers.Location = res.get('Location')
+          }
+          if (res.get('X-Powered-By')) {
+            responseOptions.headers['X-Powered-By'] = res.get('X-Powered-By')
           }
           resolve(new Response(chunk, responseOptions))
         }
