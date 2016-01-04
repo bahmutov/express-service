@@ -61572,13 +61572,12 @@ function expressService (app) {
   }
 
   function isFormPost (req) {
-    return req.method === 'POST' &&
-      req.headers.get('content-type') === 'application/x-www-form-urlencoded'
+    return req.headers.get('content-type') === 'application/x-www-form-urlencoded'
   }
 
   function formToObject (text) {
     var obj = {}
-    text.split('\n').forEach(function (line) {
+    text.split('&').forEach(function (line) {
       const parts = line.split('=')
       if (parts.length === 2) {
         obj[parts[0]] = decodeURIComponent(parts[1].replace(/\+/g, ' '))
