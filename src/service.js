@@ -45,7 +45,7 @@ function expressService (app) {
 
       var req = {
         url: parsedUrl.href,
-        method: 'GET',
+        method: event.request.method,
         headers: {},
         unpipe: function () {}
       }
