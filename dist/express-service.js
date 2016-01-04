@@ -61483,10 +61483,13 @@ module.exports = XMLHttpRequest
 },{}],432:[function(require,module,exports){
 (function (global){
 // patch and mock the environment
+
+// XMLHttpRequest is used to figure out the environment features
 if (typeof global.XMLHttpRequest === 'undefined') {
   global.XMLHttpRequest = require('./XMLHttpRequest-mock')
 }
 
+// http structures used inside Express
 var http = require('http')
 if (!http.IncomingMessage) {
   http.IncomingMessage = {}
@@ -61509,14 +61512,32 @@ if (!http.ServerResponse) {
   http.ServerResponse = Object.create({}, http.ServerResponseProto)
 }
 
+// setImmediate is missing in the ServiceWorker
 if (typeof setImmediate === 'undefined') {
   global.setImmediate = function setImmediate (cb, param) {
     setTimeout(cb.bind(null, param), 0)
   }
 }
 
+// missing file system sync calls
+const fs = require('fs')
+if (typeof fs.existsSync === 'undefined') {
+  // mocking text file system :)
+  const __files = {}
+  fs.existsSync = function existsSync (path) {
+    return typeof __files[path] !== 'undefined'
+  }
+  fs.writeFileSync = function writeFileSync (path, text) {
+    // assuming utf8
+    __files[path] = text
+  }
+  fs.readFileSync = function readFileSync (path) {
+    return __files[path]
+  }
+}
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./XMLHttpRequest-mock":431,"http":238}],433:[function(require,module,exports){
+},{"./XMLHttpRequest-mock":431,"fs":2,"http":238}],433:[function(require,module,exports){
 'use strict'
 
 // ServiceWorker script
@@ -61564,9 +61585,11 @@ function expressService (app) {
 
       var req = {
         url: parsedUrl.href,
-        method: 'GET'
+        method: 'GET',
+        headers: {},
+        unpipe: function () {}
       }
-      console.log(req)
+      // console.log(req)
       var res = {
         _headers: {},
         setHeader: function setHeader (name, value) {

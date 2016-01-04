@@ -45,9 +45,11 @@ function expressService (app) {
 
       var req = {
         url: parsedUrl.href,
-        method: 'GET'
+        method: 'GET',
+        headers: {},
+        unpipe: function () {}
       }
-      console.log(req)
+      // console.log(req)
       var res = {
         _headers: {},
         setHeader: function setHeader (name, value) {

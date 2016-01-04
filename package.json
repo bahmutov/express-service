@@ -16,7 +16,7 @@
     "basic-example-client": "cp src/client.js dist/client.js",
     "todomvc-example": "npm run todomvc-example-service && npm run todomvc-example-client",
     "todomvc-example-service": "browserify examples/todomvc/index.js -o dist/express-service.js",
-    "todomvc-example-client": "cp src/client.js dist/client.js",
+    "todomvc-example-client": "cp src/client.js dist/client.js && cp node_modules/todomvc-express/src/app.css dist",
     "start": "npm run stand-alone",
     "stand-alone": "node --harmony src/stand-alone.js",
     "dev-start": "http-server dist -c-1 -p 3007",
