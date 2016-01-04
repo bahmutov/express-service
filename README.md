@@ -9,6 +9,10 @@
 As a proof of concept I have been able to intercept fetch requests from the
 page and serve them using an ExpressJS running inside a ServiceWorker.
 
+See live [demo](https://express-service.herokuapp.com/) (use Chrome or Opera) 
+where a complete [TodoMVC Express app](https://github.com/bahmutov/todomvc-express) is running
+a ServiceWorker. [Demo source](https://github.com/bahmutov/todomvc-express-and-service-worker).
+
 ## The ExpressJS server
 
 The ExpressJS server can be found in [src/demo-server.js](src/demo-server.js), it has 2 pages
