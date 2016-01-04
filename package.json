@@ -4,7 +4,10 @@
   "version": "0.0.0-semantic-release",
   "main": "src/service.js",
   "files": [
-    "src"
+    "src",
+    "examples",
+    "dist/index.html",
+    "dist/client.js"
   ],
   "scripts": {
     "test": "npm run lint",
