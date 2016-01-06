@@ -6,6 +6,10 @@
 [![Build status][express-service-ci-image] ][express-service-ci-url]
 [![semantic-release][semantic-image] ][semantic-url]
 
+Read [Run Express server in your browser][post] blog post.
+
+[post]: https://glebbahmutov.com/blog/run-express-server-in-your-browser/
+
 As a proof of concept I have been able to intercept fetch requests from the
 page and serve them using an ExpressJS running inside a ServiceWorker.
 
