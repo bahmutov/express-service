@@ -5,6 +5,16 @@ if (typeof global.XMLHttpRequest === 'undefined') {
   global.XMLHttpRequest = require('./XMLHttpRequest-mock')
 }
 
+// high resolution timestamps
+/* global performance */
+process.hrtime = performance.now.bind(performance)
+
+process.stdout = {
+  write: function fakeWrite (str) {
+    console.log(str)
+  }
+}
+
 // http structures used inside Express
 var http = require('http')
 if (!http.IncomingMessage) {

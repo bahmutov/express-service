@@ -71,7 +71,10 @@ function expressService (app) {
           headers: {
             'content-type': event.request.headers.get('content-type')
           },
-          unpipe: function () {}
+          unpipe: function () {},
+          connection: {
+            remoteAddress: '::1'
+          }
         }
         // console.log(req)
         var res = {
