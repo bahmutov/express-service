@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "npm run lint",
-    "lint": "standard *.js src/*.js examples/**/*.js",
+    "lint": "standard --verbose --fix *.js src/*.js examples/**/*.js",
     "commit": "commit-wizard",
     "build": "npm run example",
     "example": "npm run example-service && npm run example-client",
@@ -59,7 +59,7 @@
     "express": "4.13.3",
     "git-issues": "1.2.0",
     "pre-git": "3.1.2",
-    "standard": "5.4.1",
+    "standard": "8.4.0",
     "semantic-release": "4.3.5",
     "http-server": "0.8.5"
   },

@@ -13,7 +13,7 @@ Read [Run Express server in your browser][post] blog post.
 As a proof of concept I have been able to intercept fetch requests from the
 page and serve them using an ExpressJS running inside a ServiceWorker.
 
-See live [demo](https://express-service.herokuapp.com/) (use Chrome or Opera) 
+See live [demo](https://express-service.herokuapp.com/) (use Chrome or Opera)
 where a complete [TodoMVC Express app](https://github.com/bahmutov/todomvc-express) is running
 a ServiceWorker. [Demo source](https://github.com/bahmutov/todomvc-express-and-service-worker).
 
@@ -45,9 +45,31 @@ var server = http.createServer(app)
 server.listen(3000)
 ```
 
+## Use
+
+See [src/]
+
+```js
+const expressService = require('express-service')
+const app = require('./express-server')
+expressService(app)
+```
+
+You can also cache specific static resources by providing their urls to add
+offline ability to your web application
+
+```js
+const cacheName = 'my-server-v1'
+const cacheUrls = ['/', 'app.css', 'static/foo/script.js']
+expressService(app, cacheUrls, cacheName)
+```
+
+"Real world" example can be found in
+[bahmutov/todomvc-express-and-service-worker](https://github.com/bahmutov/todomvc-express-and-service-worker/blob/master/index.js)
+
 ## The ExpressJS wrapper inside ServiceWorker
 
-We intercept each request and then create mock 
+We intercept each request and then create mock
 [Node ClientRequet](https://nodejs.org/api/http.html#http_class_http_clientrequest)
 and [Node Response](https://nodejs.org/api/http.html#http_class_http_serverresponse),
 fake enough to fool the Express. When the Express is done rendering chunk, we return
@@ -84,7 +106,7 @@ self.addEventListener('fetch', function (event) {
 This experiment is still pretty raw, but it has 3 main advantages right now
 
 * The server can be tested and used just like normal stand alone Express server
-* The pages arrive back to the browser from ServiceWorker fully rendered, 
+* The pages arrive back to the browser from ServiceWorker fully rendered,
   creating better experience.
 * Except for the initial page that can be very simple (just register and activate
   the ServiceWorker), the rest of the pages does not need to run the application JavaScript code!
@@ -96,6 +118,14 @@ This experiment is still pretty raw, but it has 3 main advantages right now
 * [bottle-service](https://github.com/bahmutov/bottle-service) - ServiceWorker interceptor
   that you can use to cache updated HTML to make sure the page arrives "pre-rendered" on
   next load for instant start up.
+
+## Building and testing example
+
+```sh
+npm run build
+npm run dev-start
+open localhost:3007
+```
 
 ### Small print
 

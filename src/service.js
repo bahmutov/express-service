@@ -9,14 +9,24 @@ require('./patch-sw-environment-for-express')
 // var express = require('express')
 // var app = express()
 // think of this as equivalent to http.createServer(app)
-function expressService (app) {
-  /* global self, Promise, Response, fetch */
+function expressService (app, cachedResources = [],
+  cacheName = 'express-service') {
+  /* global self, Promise, Response, fetch, caches */
   const url = require('url')
   const myName = 'express-service'
   console.log(myName, 'startup')
 
   self.addEventListener('install', function (event) {
     console.log(myName, 'installed')
+    if (cachedResources.length) {
+      event.waitUntil(
+        caches.open(cacheName)
+          .then((cache) => cache.addAll(cachedResources))
+          .then(() => {
+            console.log(myName, 'cached %d resources', cachedResources.length)
+          })
+      )
+    }
   })
 
   self.addEventListener('activate', function () {
@@ -51,7 +61,19 @@ function expressService (app) {
     console.log(myName, 'fetching page', parsedUrl.path)
 
     if (isJsRequest(parsedUrl.path) || isCssRequest(parsedUrl.path)) {
-      return fetch(event.request)
+      event.respondWith(
+        caches.open(cacheName).then(cache => {
+          return cache.match(event.request)
+            .then(cached => {
+              if (cached) {
+                return cached
+              }
+              return Promise.reject()
+            })
+          .catch(() => fetch(event.request))
+        })
+      )
+      return
     }
 
     event.respondWith(new Promise(function (resolve) {
